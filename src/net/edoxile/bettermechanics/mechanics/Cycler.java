@@ -19,22 +19,31 @@
 package net.edoxile.bettermechanics.mechanics;
 
 import net.edoxile.bettermechanics.utils.MechanicsConfig;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 /**
  * Created by IntelliJ IDEA.
- * User: s111172
- * Date: 20-9-11
- * Time: 21:38
- * To change this template use File | Settings | File Templates.
+ *
+ * @author Edoxile
  */
 public class Cycler {
     public static boolean cycle(Player p, Block b, MechanicsConfig c) {
         if (c.getPermissionConfig().checkZonesCreate(p, b)) {
-            byte newByte = (byte) (b.getData() + 1);
-            newByte = (newByte == 6) ? 2 : newByte;
-            b.setData(newByte);
+            Byte newByte = null;
+            switch(b.getType()) {
+                case CHEST:
+                    newByte = (byte) (b.getData() + 1);
+                    newByte = (newByte == 6) ? 2 : newByte;
+                case LOG:
+                    newByte = (byte) (b.getData() + 4);
+                    newByte = (newByte > 15) ? (byte) (newByte - 16) : newByte;
+
+            }
+            if(newByte != null) {
+                b.setData(newByte);
+            }
             return true;
         } else {
             return false;

@@ -25,11 +25,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -57,30 +57,21 @@ public class Gate {
     public boolean map() throws NonCardinalDirectionException, ChestNotFoundException, OutOfBoundsException, BlockNotFoundException {
         if (!config.enabled)
             return false;
-        /* Block chestBlock = BlockMapper.mapCuboidRegion(sign.getBlock(), 3, Material.CHEST);
-        if (chestBlock == null) {
-            throw new ChestNotFoundException();
-        } else {
-             chest = BlockbagUtil.getChest(chestBlock);
-            if (chest == null) {
-                throw new ChestNotFoundException();
-            }
-        } */
+
         smallGate = (SignUtil.getMechanicsType(sign) == MechanicsType.SMALL_GATE);
         int sw = (smallGate ? 1 : 4);
         Block startBlock = sign.getBlock().getRelative(SignUtil.getBackBlockFace(sign));
         Block tempBlock = null;
-        tempBlock = BlockMapper.mapColumn(startBlock, sw, sw, Material.FENCE);
-        if (tempBlock == null) {
-            tempBlock = BlockMapper.mapColumn(startBlock, sw, sw, Material.IRON_FENCE);
-            if (tempBlock == null) {
-                throw new BlockNotFoundException();
-            } else {
-                gateMaterial = Material.IRON_FENCE;
-            }
-        } else {
-            gateMaterial = Material.FENCE;
+
+        Iterator<Material> iterator = config.materials.iterator();
+        while (tempBlock == null && iterator.hasNext()) {
+            gateMaterial = iterator.next();
+            tempBlock = BlockMapper.mapColumn(startBlock, sw, sw, gateMaterial);
         }
+
+        if (tempBlock == null)
+            throw new BlockNotFoundException();
+
         blockSet = BlockMapper.mapFlatRegion(tempBlock, gateMaterial, config.maxWidth, config.maxLength);
         if (blockSet.isEmpty()) {
             log.info("BlockSet is empty. No blocks were found.");
@@ -96,7 +87,7 @@ public class Gate {
         try {
 
             BlockBag tmpbag = blockBagManager.searchBlockBag(sign.getBlock(), true, false);
-            if(tmpbag == null)
+            if (tmpbag == null)
                 throw new ChestNotFoundException();
 
             for (Block b : blockSet) {
@@ -138,7 +129,7 @@ public class Gate {
         try {
 
             BlockBag tmpbag = blockBagManager.searchBlockBag(sign.getBlock(), false, true);
-            if(tmpbag == null)
+            if (tmpbag == null)
                 throw new ChestNotFoundException();
 
             for (Block b : blockSet) {
@@ -174,10 +165,18 @@ public class Gate {
     }
 
     public boolean isClosed() {
+        // return blockIterator.hasNext() && blockIterator.next().getType() == gateMaterial;
+        Block tempBlock = null;
         for (Block b : blockSet) {
-            return b.getRelative(BlockFace.DOWN).getType() == gateMaterial;
+            tempBlock = b;
+            while (canPassThrough((tempBlock = tempBlock.getRelative(BlockFace.DOWN)).getType()) || tempBlock.getType() == gateMaterial) {
+                if (tempBlock.getType() != gateMaterial) {
+                    return false;
+                }
+            }
         }
-        return false;
+
+        return true;
     }
 
     private boolean canPassThrough(Material m) {

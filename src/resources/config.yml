@@ -23,6 +23,9 @@ pen:
     enabled: true
     material: 263
 
+blockbag:
+    search-width: 3
+
 use-permissions: true
 use-worldguard: false
 use-zones: false

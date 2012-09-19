@@ -8,12 +8,12 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 package net.edoxile.bettermechanics.utils;
@@ -22,6 +22,7 @@ import net.edoxile.bettermechanics.utils.BlockBags.BlackHoleSign;
 import net.edoxile.bettermechanics.utils.BlockBags.BlockSourceSign;
 import net.edoxile.bettermechanics.utils.BlockBags.ChestBag;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -52,7 +53,7 @@ public class BlockBagManager {
             sources.add(blockBag);
     }
 
-    public BlockBag isSuitableBlockBag(Block block, boolean source, boolean hole) {
+    public BlockBag isSuitableBlockBag(BlockState block, boolean source, boolean hole) {
 
         if (source) {
             for (BlockBag bagInstance : sources) {
@@ -73,22 +74,21 @@ public class BlockBagManager {
 
     public BlockBag searchBlockBag(Block block, boolean source, boolean hole) {
         int sw = config.searchWidth;
-        Block start = block;
 
         for (int dy = 0; dy <= sw; dy++) {
             for (int dx = 0; dx <= sw; dx++) {
                 for (int dz = 0; dz <= sw; dz++) {
                     HashSet<Block> blockSet = new HashSet<Block>();
-                    blockSet.add(start.getRelative(dx, dy, dz));
-                    blockSet.add(start.getRelative(-dx, dy, dz));
-                    blockSet.add(start.getRelative(dx, dy, -dz));
-                    blockSet.add(start.getRelative(-dx, dy, -dz));
-                    blockSet.add(start.getRelative(dx, -dy, dz));
-                    blockSet.add(start.getRelative(-dx, -dy, dz));
-                    blockSet.add(start.getRelative(dx, -dy, -dz));
-                    blockSet.add(start.getRelative(-dx, -dy, -dz));
+                    blockSet.add(block.getRelative(dx, dy, dz));
+                    blockSet.add(block.getRelative(-dx, dy, dz));
+                    blockSet.add(block.getRelative(dx, dy, -dz));
+                    blockSet.add(block.getRelative(-dx, dy, -dz));
+                    blockSet.add(block.getRelative(dx, -dy, dz));
+                    blockSet.add(block.getRelative(-dx, -dy, dz));
+                    blockSet.add(block.getRelative(dx, -dy, -dz));
+                    blockSet.add(block.getRelative(-dx, -dy, -dz));
                     for (Block b : blockSet) {
-                        BlockBag suitable = this.isSuitableBlockBag(b, source, hole);
+                        BlockBag suitable = this.isSuitableBlockBag(b.getState(), source, hole);
                         if (suitable != null) {
                             return suitable;
                         }

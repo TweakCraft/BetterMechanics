@@ -8,34 +8,36 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 package net.edoxile.bettermechanics.utils;
 
-import net.edoxile.bettermechanics.BetterMechanics;
-import net.edoxile.bettermechanics.exceptions.ConfigWriteException;
-
-import java.io.*;
-import java.util.logging.Logger;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.zones.Zones;
 import com.zones.model.ZoneBase;
+import net.edoxile.bettermechanics.BetterMechanics;
+import net.edoxile.bettermechanics.exceptions.ConfigWriteException;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.util.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Logger;
@@ -136,12 +138,18 @@ public class MechanicsConfig {
         public final int maxLength;
         public final int maxWidth;
         public final int maxHeight;
+        public final Set<Material> materials;
 
         public GateConfig() {
             enabled = config.getBoolean("door.enabled", true);
             maxHeight = config.getInt("door.max-height", 32);
             maxLength = config.getInt("door.max-length", 32);
             maxWidth = config.getInt("door.max-width", 3);
+            List<Integer> list = config.getIntegerList("gate.allowed-materials");
+            Set<Material> hashSet = new HashSet<Material>();
+            for (int m : list)
+                hashSet.add(Material.getMaterial(m));
+            materials = Collections.unmodifiableSet(hashSet);
         }
     }
 
@@ -320,16 +328,12 @@ public class MechanicsConfig {
             /* if (permissionHandler == null) {
                 return true;
             } else { */
-                return player.hasPermission("bettermechanics." + permission);
+            return player.hasPermission("bettermechanics." + permission);
             /* } */
         }
 
         public boolean checkWorldGuard(Player player, Block clickedBlock) {
-            if (worldGuard == null) {
-                return true;
-            } else {
-                return player.isOp() || worldGuard.canBuild(player, clickedBlock);
-            }
+            return worldGuard == null || player.isOp() || worldGuard.canBuild(player, clickedBlock);
         }
 
         public boolean check(Player player, String type, Block clickedBlock, boolean skipCreateZones, boolean skipHitZones) {

@@ -25,8 +25,3 @@ recipes:
         ingredients: [ [87,4], [60,4] ]
         # 1 pumpkin
         results: [ [86,1] ]
-    Netherbrick:
-        # 4 stonebrick, 4 hellstone
-        ingredients: [ [98,4], [87,4] ]
-        # 8 netherbrick
-        results: [ [112,8] ]

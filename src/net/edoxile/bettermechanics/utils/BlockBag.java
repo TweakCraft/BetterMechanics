@@ -22,6 +22,7 @@ import net.edoxile.bettermechanics.exceptions.OutOfMaterialException;
 import net.edoxile.bettermechanics.exceptions.OutOfSpaceException;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.logging.Logger;
@@ -88,7 +89,7 @@ public abstract class BlockBag {
      * @param block Block to check
      * @return true if it is a suitable instance
      */
-    public boolean isBlockBag(Block block) {
+    public boolean isBlockBag(BlockState block) {
         return false;
     }
 

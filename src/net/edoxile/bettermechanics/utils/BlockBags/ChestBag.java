@@ -27,8 +27,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.logging.Logger;
-
 /**
  * Created by IntelliJ IDEA.
  * User: Edoxile
@@ -41,6 +39,7 @@ public class ChestBag extends BlockBag {
         super(bag);
     }
 
+    @Override
     public boolean safeRemoveItems(ItemStack itemStack) throws OutOfMaterialException {
         boolean checkData = true;
         if (itemStack.getData() == null) {
@@ -73,7 +72,6 @@ public class ChestBag extends BlockBag {
             } else if (tempStack.getAmount() < itemStack.getAmount()) {
                 stacks[i] = null;
                 itemStack.setAmount(itemStack.getAmount() - tempStack.getAmount());
-                continue;
             } else {
                 stacks[i] = null;
                 itemStack.setAmount(0);
@@ -86,24 +84,26 @@ public class ChestBag extends BlockBag {
             throw new OutOfMaterialException(itemStack.getAmount());
         } else {
             chest.getInventory().setContents(stacks);
-            return true;
+
+            return chest.update();
         }
     }
 
+    @Override
     public boolean safeAddItems(ItemStack itemStack) throws OutOfSpaceException {
         int amount = itemStack.getAmount();
         ItemStack[] stacks = chest.getInventory().getContents();
         for (int i = 0; i < stacks.length; i++) {
             if (stacks[i] == null) {
-                if (amount > 64) {
-                    if (itemStack.getData() == null) {
-                        stacks[i] = new ItemStack(itemStack.getType(), 64);
+                if (amount > itemStack.getMaxStackSize()) {
+                    if (itemStack.getDurability() == 0) {
+                        stacks[i] = new ItemStack(itemStack.getType(), itemStack.getMaxStackSize());
                     } else {
-                        stacks[i] = itemStack.getData().toItemStack(64);
+                        stacks[i] = itemStack.getData().toItemStack(itemStack.getMaxStackSize());
                     }
-                    amount -= 64;
+                    amount -= itemStack.getMaxStackSize();
                 } else {
-                    if (itemStack.getData() == null) {
+                    if (itemStack.getDurability() == 0) {
                         stacks[i] = new ItemStack(itemStack.getType(), amount);
                     } else {
                         stacks[i] = itemStack.getData().toItemStack(amount);
@@ -115,15 +115,17 @@ public class ChestBag extends BlockBag {
                     continue;
                 } else {
                     if (stacks[i].getData() == null && itemStack.getData() == null || stacks[i].getData() != null && stacks[i].getData().equals(itemStack.getData())) {
-                        if (stacks[i].getAmount() + amount > 64) {
-                            if (itemStack.getData() == null) {
-                                stacks[i].setAmount(64);
+                        if (stacks[i].getAmount() + amount > itemStack.getMaxStackSize()) {
+                            int subtract = -stacks[i].getAmount();
+                            if (itemStack.getDurability() == 0) {
+                                stacks[i].setAmount(itemStack.getMaxStackSize());
                             } else {
-                                stacks[i] = itemStack.getData().toItemStack(64);
+                                stacks[i] = itemStack.getData().toItemStack(itemStack.getMaxStackSize());
                             }
-                            amount = stacks[i].getAmount() + amount - 64;
+                            amount = amount - (subtract + itemStack.getMaxStackSize());
+
                         } else {
-                            if (itemStack.getData() == null) {
+                            if (itemStack.getDurability() == 0) {
                                 stacks[i].setAmount(stacks[i].getAmount() + amount);
                             } else {
                                 stacks[i].setAmount(stacks[i].getAmount() + amount);
@@ -143,7 +145,7 @@ public class ChestBag extends BlockBag {
             throw new OutOfSpaceException();
         } else {
             chest.getInventory().setContents(stacks);
-            return true;
+            return chest.update();
         }
     }
 
@@ -157,21 +159,25 @@ public class ChestBag extends BlockBag {
         return null;
     }
 
+    @Override
     public boolean isBlockSource() {
         return true;
     }
 
+    @Override
     public boolean isBlockHole() {
         return true;
     }
 
+    @Override
     public Material getSourceMaterial() {
         return Material.CHEST;
     }
 
-    public boolean isBlockBag(Block block) {
+    @Override
+    public boolean isBlockBag(BlockState block) {
         if(block.getType().equals(getSourceMaterial())) {
-            chest = (Chest) block.getState();
+            chest = (Chest) block;
             return true;
         }
 

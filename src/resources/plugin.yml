@@ -1,14 +1,14 @@
 name: BetterMechanics
 main: net.edoxile.bettermechanics.BetterMechanics
-version: 1.13
-authors: ['Edoxile', 'GuntherDW']
-website: https://github.com/Edoxile/BetterMechanics
+version: 1.14-blockbags
+authors: [Edoxile, GuntherDW]
+website: https://github.com/TweakCraft/BetterMechanics
 commands:
     pen:
         description: Change the text of signs
         usage: /pen [clear|set|setline|help]
         aliases: p
     bettermechanics:
-        description: Change the text of signs
+        description: BetterMechanics command
         usage: /bettermechanics reload <cauldron>
         aliases: bm

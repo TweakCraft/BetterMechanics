@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012.
+ * Copyright (c) 2012 Edoxile
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -66,7 +66,6 @@ public class BlockbagUtil {
             } else if (tempStack.getAmount() < itemStack.getAmount()) {
                 stacks[i] = null;
                 itemStack.setAmount(itemStack.getAmount() - tempStack.getAmount());
-                continue;
             } else {
                 stacks[i] = null;
                 itemStack.setAmount(0);
