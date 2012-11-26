@@ -18,13 +18,13 @@
 
 package net.edoxile.bettermechanics.handlers;
 
-import com.sk89q.worldedit.Vector;
+/*import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.zones.Zones;
+import com.zones.Zones;*/
 import net.edoxile.bettermechanics.BetterMechanics;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -32,7 +32,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.logging.Level;
 
-import static com.sk89q.worldguard.bukkit.BukkitUtil.toVector;
+//import static com.sk89q.worldguard.bukkit.BukkitUtil.toVector;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,8 +51,8 @@ public class PermissionHandler {
     private final boolean zonesEnabled;
     private final boolean worldGuardEnabled;
 
-    private Zones zones = null;
-    private WorldGuardPlugin worldGuard = null;
+    //private Zones zones = null;
+    //private WorldGuardPlugin worldGuard = null;
 
     public enum Checks {
         NODE,
@@ -80,7 +80,7 @@ public class PermissionHandler {
     private PermissionHandler() {
         ConfigHandler.PermissionsConfig config = BetterMechanics.getInstance().getConfigHandler().getPermissionsConfig();
         enabled = config.isEnabled();
-        if (config.canUseZones()) {
+        /*if (config.canUseZones()) {
             Plugin p = BetterMechanics.getInstance().getServer().getPluginManager().getPlugin("Zones");
             if (p != null && p instanceof Zones) {
                 zones = (Zones) p;
@@ -88,21 +88,21 @@ public class PermissionHandler {
             } else {
                 zonesEnabled = false;
             }
-        } else {
+        } else {*/
             zonesEnabled = false;
-        }
+        /*}
 
         if (config.canUseWorldGuard()) {
             Plugin p = BetterMechanics.getInstance().getServer().getPluginManager().getPlugin("WorldGuard");
-            if (p != null && p instanceof WorldGuardPlugin) {
+            /*if (p != null && p instanceof WorldGuardPlugin) {
                 worldGuard = (WorldGuardPlugin) p;
                 worldGuardEnabled = true;
             } else {
                 worldGuardEnabled = false;
             }
-        } else {
+        } else {*/
             worldGuardEnabled = false;
-        }
+        //}
     }
 
     public boolean playerHasNode(Player player, String node) {
@@ -112,8 +112,8 @@ public class PermissionHandler {
     private boolean playerCanBuild(Player player, Block block) {
         if (enabled) {
             boolean returnValue = false;
-            if (zonesEnabled) {
-                returnValue = zones.getWorldManager(player).getActiveZone(block).getAccess(player).canBuild();
+            /*if (zonesEnabled) {
+                //returnValue = zones.getWorldManager(player).getActiveZone(block).getAccess(player).canBuild();
             }
             if (worldGuardEnabled) {
                 Vector vector = toVector(block);
@@ -122,7 +122,7 @@ public class PermissionHandler {
                 LocalPlayer localPlayer = worldGuard.wrapPlayer(player);
 
                 returnValue = returnValue || applicableRegions.canBuild(localPlayer);
-            }
+            }*/
             return returnValue;
         } else {
             return false;
@@ -132,7 +132,7 @@ public class PermissionHandler {
     private boolean playerCanHit(Player player, Block block) {
         if (enabled) {
             boolean returnValue = false;
-            if (zonesEnabled) {
+            /*if (zonesEnabled) {
                 returnValue = zones.getWorldManager(player).getActiveZone(block).getAccess(player).canHit();
             }
             if (worldGuardEnabled) {
@@ -142,7 +142,7 @@ public class PermissionHandler {
 
                 returnValue = returnValue || worldGuard.getGlobalRegionManager().hasBypass(player, block.getWorld())
                         && applicableRegions.allows(DefaultFlag.USE);
-            }
+            }*/
             return returnValue;
         } else {
             return false;

@@ -73,6 +73,7 @@ public class ConfigHandler {
         penConfig = new PenConfig();
         cyclerConfig = new CyclerConfig();
         powerBlockConfig = new PowerBlockConfig();
+        permissionsConfig = new PermissionsConfig();
     }
 
     private final BridgeConfig bridgeConfig;
@@ -86,7 +87,7 @@ public class ConfigHandler {
     private final CyclerConfig cyclerConfig;
     private PowerBlockConfig powerBlockConfig;
     private final PenConfig penConfig;
-    private PermissionsConfig permisionsConfig;
+    private PermissionsConfig permissionsConfig;
 
     public FileConfiguration getConfiguration() {
         return configuration;
@@ -497,7 +498,7 @@ public class ConfigHandler {
     }
 
     public PermissionsConfig getPermissionsConfig() {
-        return permisionsConfig;
+        return permissionsConfig;
     }
 
     public CyclerConfig getCyclerConfig() {

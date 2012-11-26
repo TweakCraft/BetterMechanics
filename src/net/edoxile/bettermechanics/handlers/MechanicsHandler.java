@@ -222,13 +222,21 @@ public class MechanicsHandler {
 
         Set<SignMechanicListener> listeners = new HashSet<SignMechanicListener>();
         Sign sign = (Sign) event.getBlock().getState();
-
+        HashSet<SignMechanicListener> data = null;
         if (event instanceof RedstoneEvent) {
-            listeners.addAll(redstoneSignMechanicMap.get(SignUtil.getMechanicsIdentifier(sign)));
-            listeners.addAll(redstoneSignMechanicMap.get(""));
+            data = redstoneSignMechanicMap.get(SignUtil.getMechanicsIdentifier(sign));
+            if (data != null)
+                listeners.addAll(data);
+            data = redstoneSignMechanicMap.get("");
+            if (data != null)
+                listeners.addAll(data);
         } else if (event instanceof PlayerEvent) {
-            listeners.addAll(signMechanicMap.get(SignUtil.getMechanicsIdentifier(sign)));
-            listeners.addAll(signMechanicMap.get(""));
+            data = signMechanicMap.get(SignUtil.getMechanicsIdentifier(sign));
+            if (data != null)
+                listeners.addAll(data);
+            data = signMechanicMap.get("");
+            if (data != null)
+                listeners.addAll(data);
         } else {
             BetterMechanics.log("Something went wrong, unknown type passed to getSignListeners()");
         }
@@ -244,13 +252,22 @@ public class MechanicsHandler {
 
         Set<BlockMechanicListener> listeners = new HashSet<BlockMechanicListener>();
         Block block = event.getBlock();
+        HashSet<BlockMechanicListener> data = null;
 
         if (event instanceof RedstoneEvent) {
-            listeners.addAll(redstoneBlockMechanicMap.get(block.getType()));
-            listeners.addAll(redstoneBlockMechanicMap.get(Material.AIR));
+            data = redstoneBlockMechanicMap.get(block.getType());
+            if (data != null)
+                listeners.addAll(data);
+            data = redstoneBlockMechanicMap.get(Material.AIR);
+            if (data != null)
+                listeners.addAll(data);
         } else if (event instanceof PlayerEvent) {
-            listeners.addAll(blockMechanicMap.get(block.getType()));
-            listeners.addAll(blockMechanicMap.get(Material.AIR));
+            data = blockMechanicMap.get(block.getType());
+            if (data != null)
+                listeners.addAll(data);
+            data = blockMechanicMap.get(Material.AIR);
+            if (data != null)
+                listeners.addAll(data);
         } else {
             BetterMechanics.log("Something went wrong, unknown type passed to getBlockListeners()");
         }
@@ -262,9 +279,19 @@ public class MechanicsHandler {
         //Returns a list of sign mechanics. Is needed by BMListener to set correct ID's on each sign.
         Set<SignMechanicListener> set = new HashSet<SignMechanicListener>();
         for (Set<SignMechanicListener> set2 : signMechanicMap.values()) {
-            set.addAll(set2);
+            if(set2 != null)
+                set.addAll(set2);
         }
         for (Set<SignMechanicListener> set2 : redstoneSignMechanicMap.values()) {
+            if(set2 != null)
+                set.addAll(set2);
+        }
+        return set;
+    }
+
+    public Set<BlockMechanicListener> getBlockMechanics(){
+        Set<BlockMechanicListener> set = new HashSet<BlockMechanicListener>();
+        for(Set<BlockMechanicListener> set2 : blockMechanicMap.values()) {
             set.addAll(set2);
         }
         return set;
