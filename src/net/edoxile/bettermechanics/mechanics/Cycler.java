@@ -19,7 +19,6 @@
 package net.edoxile.bettermechanics.mechanics;
 
 import net.edoxile.bettermechanics.utils.MechanicsConfig;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -31,17 +30,43 @@ import org.bukkit.entity.Player;
 public class Cycler {
     public static boolean cycle(Player p, Block b, MechanicsConfig c) {
         if (c.getPermissionConfig().checkZonesCreate(p, b)) {
-            Byte newByte = null;
+            byte newByte = -1;
             switch(b.getType()) {
                 case CHEST:
                     newByte = (byte) (b.getData() + 1);
                     newByte = (newByte == 6) ? 2 : newByte;
+                    break;
                 case LOG:
                     newByte = (byte) (b.getData() + 4);
                     newByte = (newByte > 15) ? (byte) (newByte - 16) : newByte;
+                    break;
+                case BIRCH_WOOD_STAIRS:
+                case BRICK_STAIRS:
+                case COBBLESTONE_STAIRS:
+                case JUNGLE_WOOD_STAIRS:
+                case NETHER_BRICK_STAIRS:
+                case QUARTZ_STAIRS:
+                case SANDSTONE_STAIRS:
+                case SMOOTH_STAIRS:
+                case SPRUCE_WOOD_STAIRS:
+                case WOOD_STAIRS:
+                    byte data = (byte) (b.getData());
+                    byte lastTwo = (byte) ((data & 0b0011) + 1);
+                    if (lastTwo == 4){
+                        // flip bit 4, clear bits 2 and 1
+                        newByte = (byte) (((data ^ (0b1000)) & 0b1100));
+                    } else {
+                        // put bits 2 and 1 from lastTwo into data
+                        newByte = (byte) ((data & 0b1100) | lastTwo);
+                    }
+                    break;
+                case STEP:
+                case WOOD_STEP:
+                    newByte = (byte) (b.getData() ^ (0b1000));
+                    break;                    
 
             }
-            if(newByte != null) {
+            if(newByte != -1) {
                 b.setData(newByte);
             }
             return true;
