@@ -45,54 +45,10 @@ public class BlockMapper {
         int traversed = 0;
 
         switch (direction) {
-            case WEST: {
-                Location startLoc = start.getLocation();
-                Location endLoc = end.getLocation();
-                if (startLoc.getBlockX() != endLoc.getBlockX() || startLoc.getBlockY() != endLoc.getBlockY() || startLoc.getBlockZ() > endLoc.getBlockZ()) {
-                    throw new InvalidDirectionException();
-                } else {
-                    Block tempBlock = start;
-                    while (!tempBlock.getLocation().equals(end.getLocation()) && traversed < maxTraverse) {
-                        blockSet.add(tempBlock);
-                        if (!small) {
-                            blockSet.add(tempBlock.getRelative(BlockFace.NORTH));
-                            blockSet.add(tempBlock.getRelative(BlockFace.SOUTH));
-                        }
-                        tempBlock = tempBlock.getRelative(direction);
-                        traversed++;
-                    }
-                    if (traversed >= maxTraverse) {
-                        log.severe("[BetterMechanics] MaxTraverse hit on " + start.getLocation());
-                    }
-                }
-            }
-            break;
-            case EAST: {
-                Location startLoc = start.getLocation();
-                Location endLoc = end.getLocation();
-                if (startLoc.getBlockX() != endLoc.getBlockX() || startLoc.getBlockY() != endLoc.getBlockY() || endLoc.getBlockZ() > startLoc.getBlockZ()) {
-                    throw new InvalidDirectionException();
-                } else {
-                    Block tempBlock = start;
-                    while (!tempBlock.getLocation().equals(end.getLocation()) && traversed < maxTraverse) {
-                        blockSet.add(tempBlock);
-                        if (!small) {
-                            blockSet.add(tempBlock.getRelative(BlockFace.NORTH));
-                            blockSet.add(tempBlock.getRelative(BlockFace.SOUTH));
-                        }
-                        tempBlock = tempBlock.getRelative(direction);
-                        traversed++;
-                    }
-                    if (traversed >= maxTraverse) {
-                        log.severe("[BetterMechanics] MaxTraverse hit on " + start.getLocation());
-                    }
-                }
-            }
-            break;
             case SOUTH: {
                 Location startLoc = start.getLocation();
                 Location endLoc = end.getLocation();
-                if (startLoc.getBlockZ() != endLoc.getBlockZ() || startLoc.getBlockY() != endLoc.getBlockY() || startLoc.getBlockX() > endLoc.getBlockX()) {
+                if (startLoc.getBlockX() != endLoc.getBlockX() || startLoc.getBlockY() != endLoc.getBlockY() || startLoc.getBlockZ() > endLoc.getBlockZ()) {
                     throw new InvalidDirectionException();
                 } else {
                     Block tempBlock = start;
@@ -114,7 +70,7 @@ public class BlockMapper {
             case NORTH: {
                 Location startLoc = start.getLocation();
                 Location endLoc = end.getLocation();
-                if (startLoc.getBlockZ() != endLoc.getBlockZ() || startLoc.getBlockY() != endLoc.getBlockY() || endLoc.getBlockX() > startLoc.getBlockX()) {
+                if (startLoc.getBlockX() != endLoc.getBlockX() || startLoc.getBlockY() != endLoc.getBlockY() || endLoc.getBlockZ() > startLoc.getBlockZ()) {
                     throw new InvalidDirectionException();
                 } else {
                     Block tempBlock = start;
@@ -123,6 +79,50 @@ public class BlockMapper {
                         if (!small) {
                             blockSet.add(tempBlock.getRelative(BlockFace.WEST));
                             blockSet.add(tempBlock.getRelative(BlockFace.EAST));
+                        }
+                        tempBlock = tempBlock.getRelative(direction);
+                        traversed++;
+                    }
+                    if (traversed >= maxTraverse) {
+                        log.severe("[BetterMechanics] MaxTraverse hit on " + start.getLocation());
+                    }
+                }
+            }
+            break;
+            case EAST: {
+                Location startLoc = start.getLocation();
+                Location endLoc = end.getLocation();
+                if (startLoc.getBlockZ() != endLoc.getBlockZ() || startLoc.getBlockY() != endLoc.getBlockY() || startLoc.getBlockX() > endLoc.getBlockX()) {
+                    throw new InvalidDirectionException();
+                } else {
+                    Block tempBlock = start;
+                    while (!tempBlock.getLocation().equals(end.getLocation()) && traversed < maxTraverse) {
+                        blockSet.add(tempBlock);
+                        if (!small) {
+                            blockSet.add(tempBlock.getRelative(BlockFace.NORTH));
+                            blockSet.add(tempBlock.getRelative(BlockFace.SOUTH));
+                        }
+                        tempBlock = tempBlock.getRelative(direction);
+                        traversed++;
+                    }
+                    if (traversed >= maxTraverse) {
+                        log.severe("[BetterMechanics] MaxTraverse hit on " + start.getLocation());
+                    }
+                }
+            }
+            break;
+            case WEST: {
+                Location startLoc = start.getLocation();
+                Location endLoc = end.getLocation();
+                if (startLoc.getBlockZ() != endLoc.getBlockZ() || startLoc.getBlockY() != endLoc.getBlockY() || endLoc.getBlockX() > startLoc.getBlockX()) {
+                    throw new InvalidDirectionException();
+                } else {
+                    Block tempBlock = start;
+                    while (!tempBlock.getLocation().equals(end.getLocation()) && traversed < maxTraverse) {
+                        blockSet.add(tempBlock);
+                        if (!small) {
+                            blockSet.add(tempBlock.getRelative(BlockFace.NORTH));
+                            blockSet.add(tempBlock.getRelative(BlockFace.SOUTH));
                         }
                         tempBlock = tempBlock.getRelative(direction);
                         traversed++;
@@ -256,12 +256,14 @@ public class BlockMapper {
         for (int dy = nh; dy <= h; dy++) {
             for (int dx = nsw; dx <= sw; dx++) {
                 tempBlock = start.getRelative(dx, dy, 0);
+                // System.out.println(dx+" "+dy+" 0 tempBlock -> "+tempBlock);
                 if (tempBlock.getType() == m) {
                     return getUpperBlock(tempBlock);
                 }
             }
             for (int dz = nsw; dz <= sw; dz++) {
                 tempBlock = start.getRelative(0, dy, dz);
+                // System.out.println("0 "+dy+" "+dz+" tempBlock -> "+tempBlock);
                 if (tempBlock.getType() == m) {
                     return getUpperBlock(tempBlock);
                 }
@@ -320,41 +322,51 @@ public class BlockMapper {
 
     public static HashSet<Block> mapFlatRegion(Block start, Material m, int w, int l) throws OutOfBoundsException {
         Block tempBlock = start;
+        // System.out.println("Starting block : "+tempBlock);
         int west = 0, east = 0, south = 0, north = 0, width, length;
         while (checkInColumn(tempBlock.getRelative(BlockFace.WEST), m, 1) != null) {
+            // System.out.println("Adding WEST");
             tempBlock = tempBlock.getRelative(BlockFace.WEST);
             west++;
         }
         tempBlock = start;
         while (checkInColumn(tempBlock.getRelative(BlockFace.EAST), m, 1) != null) {
             tempBlock = tempBlock.getRelative(BlockFace.EAST);
+            // System.out.println("Adding EAST");
             east++;
         }
         tempBlock = start;
         while (checkInColumn(tempBlock.getRelative(BlockFace.NORTH), m, 1) != null) {
             tempBlock = tempBlock.getRelative(BlockFace.NORTH);
+            // System.out.println("Adding NORTH");
             north++;
         }
         tempBlock = start;
         while (checkInColumn(tempBlock.getRelative(BlockFace.SOUTH), m, 1) != null) {
             tempBlock = tempBlock.getRelative(BlockFace.SOUTH);
+            // System.out.println("Adding SOUTH");
             south++;
         }
         if ((north + south) > (east + west)) {
-            width = (east + west);
             length = (north + south);
+            width = (east + west);
         } else {
-            length = (east + west);
             width = (north + south);
+            length = (east + west);
         }
         if (width > w || length > l) {
+            /* System.out.println("w:"+w+" width : "+width);
+            System.out.println("l:"+l+" length : "+length); */
             throw new OutOfBoundsException();
         }
-        start = start.getRelative((~north + 1), 0, (~east + 1));
+        start = start.getRelative((~west + 1), 0, (~north + 1));
         HashSet<Block> blockSet = new HashSet<Block>();
-        for (int dx = 0; dx <= (north + south); dx++) {
-            for (int dz = 0; dz <= (east + west); dz++) {
-                tempBlock = checkInColumn(start.getRelative(dx, 0, dz), m, 1);
+        for (int dx = 0; dx <= (east + west); dx++) {
+            for (int dz = 0; dz <= (north + south); dz++) {
+                Block b = start.getRelative(dx, 0, dz);
+                // Location ll = b.getLocation();
+                tempBlock = checkInColumn(b, m, 1);
+                // System.out.println("Fetching ("+ll.getBlockX()+","+ll.getBlockY()+","+ll.getBlockZ()+")"+tempBlock);
                 if (tempBlock != null) {
                     blockSet.add(getUpperBlock(tempBlock));
                 }
