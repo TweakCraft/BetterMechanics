@@ -51,18 +51,18 @@ public class Cycler {
                 case SPRUCE_WOOD_STAIRS:
                 case WOOD_STAIRS:
                     byte data = (byte) (b.getData());
-                    byte lastTwo = (byte) ((data & 0b0011) + 1);
+                    byte lastTwo = (byte) ((data & 3) + 1);
                     if (lastTwo == 4){
                         // flip bit 4, clear bits 2 and 1
-                        newByte = (byte) (((data ^ (0b1000)) & 0b1100));
+                        newByte = (byte) (((data ^ 8) & 12));
                     } else {
                         // put bits 2 and 1 from lastTwo into data
-                        newByte = (byte) ((data & 0b1100) | lastTwo);
+                        newByte = (byte) ((data & 12) | lastTwo);
                     }
                     break;
                 case STEP:
                 case WOOD_STEP:
-                    newByte = (byte) (b.getData() ^ (0b1000));
+                    newByte = (byte) (b.getData() ^ 8);
                     break;                    
 
             }
