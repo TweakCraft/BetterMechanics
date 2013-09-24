@@ -19,6 +19,8 @@
 package net.edoxile.bettermechanics.mechanics;
 
 import net.edoxile.bettermechanics.utils.MechanicsConfig;
+import org.bukkit.Bukkit;
+import static org.bukkit.Material.REDSTONE_COMPARATOR;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -49,12 +51,12 @@ public class Cycler {
                 case SANDSTONE_STAIRS:
                 case SMOOTH_STAIRS:
                 case SPRUCE_WOOD_STAIRS:
-                case WOOD_STAIRS:
+                case WOOD_STAIRS: // nog niet
                     byte data = (byte) (b.getData());
                     byte lastTwo = (byte) ((data & 3) + 1);
                     if (lastTwo == 4){
                         // flip bit 4, clear bits 2 and 1
-                        newByte = (byte) (((data ^ 8) & 12));
+                        newByte = (byte) (((data ^ 4) & 12));
                     } else {
                         // put bits 2 and 1 from lastTwo into data
                         newByte = (byte) ((data & 12) | lastTwo);
@@ -63,7 +65,43 @@ public class Cycler {
                 case STEP:
                 case WOOD_STEP:
                     newByte = (byte) (b.getData() ^ 8);
-                    break;                    
+                    break;
+                case PISTON_BASE:
+                case PISTON_STICKY_BASE:
+                    newByte = (byte) ((b.getData() + 1) % 7);
+                    break;
+                case SIGN_POST:
+                    newByte = (byte) ((b.getData() + 1) % 16);
+                    break;
+                case DISPENSER:
+                case DROPPER:
+                case HOPPER:
+                    newByte = (byte) ((b.getData() + 1) % 6);
+                    break;
+                case PUMPKIN:
+                    newByte = (byte) ((b.getData() + 1) % 5);
+                    break;
+                case DIODE_BLOCK_OFF:
+                case DIODE_BLOCK_ON:
+                case REDSTONE_COMPARATOR_OFF:
+                case REDSTONE_COMPARATOR_ON:
+                    byte dat = (byte) (b.getData());
+                    byte lTwo = (byte) (((dat & 3) + 1) % 4);
+                    newByte = (byte) ((dat & 12) | lTwo);
+                    break;
+                case TRAP_DOOR:
+                    newByte = (byte) ((b.getData() + 1) % 4);
+                    break;
+                case HUGE_MUSHROOM_1:
+                case HUGE_MUSHROOM_2:
+                    newByte = (byte) ((b.getData() + 1) % 16);
+                    if(newByte > 10 && newByte < 14){
+                        newByte = 14;
+                    }
+                    break;
+                case FENCE_GATE:
+                    newByte = (byte) ((b.getData() + 1) % 4);
+                    break;
 
             }
             if(newByte != -1) {

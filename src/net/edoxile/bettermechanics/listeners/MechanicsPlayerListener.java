@@ -67,7 +67,7 @@ public class MechanicsPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (SignUtil.isSign(event.getClickedBlock())) {
+            if (SignUtil.isSign(event.getClickedBlock()) && !(event.getPlayer().getItemInHand().getTypeId() == Material.WOOD_HOE.getId())) {
                 Sign sign = SignUtil.getSign(event.getClickedBlock());
                 if (sign != null) {
                     if (SignUtil.getActiveMechanicsType(sign) != null) {
