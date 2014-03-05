@@ -28,13 +28,16 @@ import net.edoxile.bettermechanics.utils.PlayerNotifier;
 import net.edoxile.bettermechanics.utils.SignUtil;
 import net.edoxile.bettermechanics.utils.datastorage.BlockMap;
 import net.edoxile.bettermechanics.utils.datastorage.BlockMapException;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static net.edoxile.bettermechanics.utils.BlockUtil.blocksEqual;
@@ -47,8 +50,8 @@ import static net.edoxile.bettermechanics.utils.BlockUtil.blocksEqual;
 public class Bridge extends SignMechanicListener {
 
     private final ConfigHandler.BridgeConfig config = BetterMechanics.getInstance().getConfigHandler().getBridgeConfig();
-    private final String[] identifiers = new String[]{"Bridge", "sBridge"};
-    private final String[] passiveIdentifiers = new String[]{"Bridge", "sBridge", "Bridge End", "sBridge End"};
+    private final List<String> identifiers = Arrays.asList("Bridge", "sBridge");
+    private final List<String> passiveIdentifiers = Arrays.asList("Bridge", "sBridge", "Bridge End", "sBridge End");
 
     @Override
     public void onSignPowerOn(RedstoneEvent event) {
@@ -91,12 +94,17 @@ public class Bridge extends SignMechanicListener {
     }
 
     @Override
-    public String[] getIdentifiers() {
+    public void onBlockPlace(PlayerEvent event){
+        event.setCancelled(true);
+    }
+
+    @Override
+    public List<String> getIdentifiers() {
         return identifiers;
     }
 
     @Override
-    public String[] getPassiveIdentifiers() {
+    public List<String> getPassiveIdentifiers() {
         return passiveIdentifiers;
     }
 
@@ -121,8 +129,8 @@ public class Bridge extends SignMechanicListener {
     }
 
     @Override
-    public Material[] getMechanicActivators() {
-        return new Material[]{Material.AIR};
+    public List<Material> getMechanicActivators() {
+        return voidActor;
     }
 
     @Override
@@ -139,7 +147,7 @@ public class Bridge extends SignMechanicListener {
     public void mapBlocks(Sign sign) throws BlockMapException {
         final int maxDistance = config.getMaxLength();
         String node = SignUtil.getMechanicsIdentifier(sign);
-        final boolean isSmall = node.equals("sBridge");
+        final boolean isLarge = node.equals("Bridge");
         BlockFace direction = SignUtil.getFacing(sign).getOppositeFace();
         if (SignUtil.isOrdinal(direction)) {
             Block startBlock = sign.getBlock();
@@ -171,7 +179,7 @@ public class Bridge extends SignMechanicListener {
                                         Block currentBlock = startBlock.getRelative(direction);
                                         while (!currentBlock.equals(endBlock)) {
                                             blockList.add(currentBlock);
-                                            if (isSmall) {
+                                            if (isLarge) {
                                                 blockList.add(currentBlock.getRelative(BlockFace.EAST));
                                                 blockList.add(currentBlock.getRelative(BlockFace.WEST));
                                             }
@@ -191,7 +199,7 @@ public class Bridge extends SignMechanicListener {
                                         Block currentBlock = startBlock.getRelative(direction);
                                         while (!currentBlock.equals(endBlock)) {
                                             blockList.add(currentBlock);
-                                            if (isSmall) {
+                                            if (isLarge) {
                                                 blockList.add(currentBlock.getRelative(BlockFace.NORTH));
                                                 blockList.add(currentBlock.getRelative(BlockFace.SOUTH));
                                             }

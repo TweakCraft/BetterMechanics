@@ -68,6 +68,7 @@ public class BetterMechanics extends JavaPlugin {
     @Override
     public void onEnable() {
         //Register different Mechanics
+        mechanicsHandler.addMechanic(new Ammeter());
         mechanicsHandler.addMechanic(new Pen());
         mechanicsHandler.addMechanic(new Gate());
         mechanicsHandler.addMechanic(new Bridge());
@@ -118,19 +119,15 @@ public class BetterMechanics extends JavaPlugin {
         return getConfig();
     }
 
-    @Override
-    public File getDataFolder() {
-        return dataFolder;
-    }
+    //@Override
+    //public File getDataFolder() { return dataFolder; }
 
     public File getJarFile() {
         return jarFile;
     }
 
-    @Override
-    public Logger getLogger() {
-        return logger;
-    }
+    //@Override
+    //public Logger getLogger() { return logger; }
 
     public static BetterMechanics getInstance() {
         return instance;

@@ -27,6 +27,7 @@ import net.edoxile.bettermechanics.mechanics.interfaces.IMechanicCommandListener
 import net.edoxile.bettermechanics.mechanics.interfaces.IMechanicListener;
 import net.edoxile.bettermechanics.mechanics.interfaces.SignMechanicListener;
 import net.edoxile.bettermechanics.utils.SignUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -135,11 +136,11 @@ public class MechanicsHandler {
     }
 
     public void callPlayerEvent(PlayerEvent event) {
-        if (SignUtil.isSign(event.getBlock())) {
+        if (SignUtil.isSign(event.getBlock()) && event.getAction() != PlayerEvent.Action.PLACE) {
             Set<SignMechanicListener> listeners = getSignListeners(event);
             main:
             for (SignMechanicListener listener : listeners) {
-                if (listener.isTriggeredByPlayer()) {
+                if (listener.isTriggeredByPlayer() && listener.isThisMechanic(event.getSign(), event.getPlayer().getItemInHand().getType())) {
                     switch (event.getAction()) {
                         case RIGHT_CLICK:
                             listener.onPlayerRightClickSign(event);
@@ -147,6 +148,10 @@ public class MechanicsHandler {
                         case LEFT_CLICK:
                             listener.onPlayerLeftClickSign(event);
                             break;
+                        case BREAK:
+                            listener.onPlayerBreakSign(event);
+                        case PLACE:
+                            listener.onBlockPlace(event);
                         default:
                             break main;
                     }
@@ -154,9 +159,11 @@ public class MechanicsHandler {
             }
         } else {
             Set<BlockMechanicListener> listeners = getBlockListeners(event);
+            if (listeners == null)
+                return;
             main:
             for (BlockMechanicListener listener : listeners) {
-                if (listener.isTriggeredByPlayer()) {
+                if (listener.isTriggeredByPlayer() && listener.isThisMechanic(event.getPlayer().getItemInHand().getType(), event.getBlock().getType())) {
                     switch (event.getAction()) {
                         case RIGHT_CLICK:
                             listener.onBlockRightClick(event);
@@ -222,7 +229,7 @@ public class MechanicsHandler {
 
         Set<SignMechanicListener> listeners = new HashSet<SignMechanicListener>();
         Sign sign = (Sign) event.getBlock().getState();
-        HashSet<SignMechanicListener> data = null;
+        HashSet<SignMechanicListener> data;
         if (event instanceof RedstoneEvent) {
             data = redstoneSignMechanicMap.get(SignUtil.getMechanicsIdentifier(sign));
             if (data != null)
@@ -252,7 +259,7 @@ public class MechanicsHandler {
 
         Set<BlockMechanicListener> listeners = new HashSet<BlockMechanicListener>();
         Block block = event.getBlock();
-        HashSet<BlockMechanicListener> data = null;
+        HashSet<BlockMechanicListener> data;
 
         if (event instanceof RedstoneEvent) {
             data = redstoneBlockMechanicMap.get(block.getType());
@@ -279,19 +286,19 @@ public class MechanicsHandler {
         //Returns a list of sign mechanics. Is needed by BMListener to set correct ID's on each sign.
         Set<SignMechanicListener> set = new HashSet<SignMechanicListener>();
         for (Set<SignMechanicListener> set2 : signMechanicMap.values()) {
-            if(set2 != null)
+            if (set2 != null)
                 set.addAll(set2);
         }
         for (Set<SignMechanicListener> set2 : redstoneSignMechanicMap.values()) {
-            if(set2 != null)
+            if (set2 != null)
                 set.addAll(set2);
         }
         return set;
     }
 
-    public Set<BlockMechanicListener> getBlockMechanics(){
+    public Set<BlockMechanicListener> getBlockMechanics() {
         Set<BlockMechanicListener> set = new HashSet<BlockMechanicListener>();
-        for(Set<BlockMechanicListener> set2 : blockMechanicMap.values()) {
+        for (Set<BlockMechanicListener> set2 : blockMechanicMap.values()) {
             set.addAll(set2);
         }
         return set;

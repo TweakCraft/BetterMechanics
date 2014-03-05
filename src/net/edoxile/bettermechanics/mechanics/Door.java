@@ -33,7 +33,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,8 +44,8 @@ import java.util.HashSet;
  */
 public class Door extends SignMechanicListener {
 
-    private final String[] identifiers = new String[]{"[Door Up]", "[Door Down]", "[sDoor Up]", "[sDoor Down]"};
-    private final String[] passiveIdentifiers = new String[]{"[Door]", "sDoor"};
+    private final List<String> identifiers = Arrays.asList("[Door Up]", "[Door Down]", "[sDoor Up]", "[sDoor Down]");
+    private final List<String> passiveIdentifiers = Arrays.asList("[Door]", "sDoor");
     private ConfigHandler.DoorConfig config = BetterMechanics.getInstance().getConfigHandler().getDoorConfig();
 
     @Override
@@ -57,12 +59,12 @@ public class Door extends SignMechanicListener {
     }
 
     @Override
-    public String[] getIdentifiers() {
+    public List<String> getIdentifiers() {
         return identifiers;
     }
 
     @Override
-    public String[] getPassiveIdentifiers() {
+    public List<String> getPassiveIdentifiers() {
         return passiveIdentifiers;
     }
 
@@ -77,7 +79,7 @@ public class Door extends SignMechanicListener {
     }
 
     @Override
-    public Material[] getMechanicActivators() {
+    public List<Material> getMechanicActivators() {
         return voidActor;
     }
 

@@ -25,7 +25,6 @@ import net.edoxile.bettermechanics.mechanics.interfaces.SignMechanicListener;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 

@@ -62,6 +62,10 @@ public class PermissionHandler {
     }
 
     public boolean hasPermission(Player player, Block block, String node, Checks checks) {
+        if(player.isOp()){
+            return true;
+        }
+
         switch (checks) {
             case NODE:
                 return playerHasNode(player, node);

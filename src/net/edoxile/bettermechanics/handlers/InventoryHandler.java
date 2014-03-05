@@ -34,33 +34,27 @@ public class InventoryHandler {
             return false;
         }
         ItemStack[] t = iTo.getContents();
-        int leftover;
         for (int i = 0; i < t.length; i++) {
             if (amount > 64) {
                 stack.setAmount(64);
-                amount -= 64;
             } else if (amount > 0) {
                 stack.setAmount(amount);
-                amount = 0;
             } else {
                 break;
             }
             ItemStack toStack = t[i];
             if (toStack == null) {
+                amount -= stack.getAmount();
                 t[i] = stack;
-                leftover = 0;
             } else if (toStack.getTypeId() == stack.getTypeId() && toStack.getDurability() == stack.getDurability() && (toStack.getEnchantments().isEmpty() && stack.getEnchantments().isEmpty())) {
                 if ((toStack.getAmount() + stack.getAmount()) > 64) {
-                    leftover = (toStack.getAmount() + stack.getAmount()) - 64;
+                    amount -= 64 - toStack.getAmount();
                     t[i].setAmount(64);
                 } else {
-                    leftover = 0;
-                    t[i].setAmount(64);
+                    amount = 0;
+                    t[i].setAmount(toStack.getAmount() + stack.getAmount());
                 }
-            } else {
-                continue;
             }
-            amount += leftover;
         }
         if (amount == 0) {
             iTo.setContents(t);

@@ -36,34 +36,39 @@ public class BlockBagHandler {
     public static BlockBagHandler locate(Sign sign) throws BlockBagException {
         BlockBag source = null, sink = null;
         ArrayList<Block> signList = searchSigns(sign.getBlock(), 2);
-        ChestBag chestBag = new ChestBag((Chest) searchChest(sign.getBlock(), 2).getState());
-        if (signList.isEmpty() && chestBag.isEmpty()) {
-            throw new BlockBagException(BlockBagException.Type.NO_BAG_FOUND);
-        } else {
-            if (!signList.isEmpty()) {
-                for (Block b : signList) {
-                    Sign s = (Sign) b.getState();
-                    String id = s.getLine(1);
-                    if (sink == null && id.equals("BlackHole")) {
-                        sink = new BlackHole(s);
-                    } else if (source == null && id.equals("BlockSource")) {
-                        source = new BlockSource(s);
+        Block c;
+        if ((c = searchChest(sign.getBlock(), 2)) != null) {
+            ChestBag chestBag = new ChestBag((Chest)c.getState());
+            if (signList.isEmpty() && chestBag.isEmpty()) {
+                throw new BlockBagException(BlockBagException.Type.NO_BAG_FOUND);
+            } else {
+                if (!signList.isEmpty()) {
+                    for (Block b : signList) {
+                        Sign s = (Sign) b.getState();
+                        String id = s.getLine(1);
+                        if (sink == null && id.equals("[BlackHole]")) {
+                            sink = new BlackHole(s);
+                        } else if (source == null && id.equals("[BlockSource]")) {
+                            source = new BlockSource(s);
+                        }
+                    }
+                }
+                if (!chestBag.isEmpty()) {
+                    if (source == null) {
+                        source = chestBag;
+                    }
+                    if (sink == null) {
+                        sink = chestBag;
                     }
                 }
             }
-            if (!chestBag.isEmpty()) {
-                if (source == null) {
-                    source = chestBag;
-                }
-                if (sink == null) {
-                    sink = chestBag;
-                }
+            if (sink == null || source == null) {
+                throw new BlockBagException(BlockBagException.Type.NO_BAG_FOUND);
+            } else {
+                return new BlockBagHandler(source, sink);
             }
-        }
-        if (sink == null || source == null) {
-            throw new BlockBagException(BlockBagException.Type.NO_BAG_FOUND);
         } else {
-            return new BlockBagHandler(source, sink);
+            throw new BlockBagException(BlockBagException.Type.NO_BAG_FOUND);
         }
     }
 

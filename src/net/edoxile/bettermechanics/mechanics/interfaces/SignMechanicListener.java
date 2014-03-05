@@ -31,6 +31,9 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -40,7 +43,7 @@ import java.util.logging.Level;
  */
 public abstract class SignMechanicListener extends BlockMechanicListener {
 
-    protected String[] voidTarget = new String[]{""};
+    protected List<String> voidIdentifiers = Arrays.asList("");
 
     protected BlockMap blockMap;
     protected BlockBagHandler blockBag;
@@ -67,6 +70,9 @@ public abstract class SignMechanicListener extends BlockMechanicListener {
     public void onPlayerLeftClickSign(PlayerEvent event) {
     }
 
+    public void onPlayerBreakSign(PlayerEvent event){
+    }
+
     public abstract boolean hasBlockMapper();
 
     public abstract boolean hasBlockBag();
@@ -76,12 +82,16 @@ public abstract class SignMechanicListener extends BlockMechanicListener {
         throw new BlockMapException(BlockMapException.Type.NO_BLOCKMAP);
     }
 
-    public abstract String[] getIdentifiers();
+    public abstract List<String> getIdentifiers();
 
-    public abstract String[] getPassiveIdentifiers();
+    public abstract List<String> getPassiveIdentifiers();
 
     @Override
-    public abstract Material[] getMechanicActivators();
+    public abstract List<Material> getMechanicActivators();
+
+    public boolean isThisMechanic(Sign sign, Material activator) {
+        return isThisMechanic(sign) && isThisMechanic(activator, sign.getType());
+    }
 
     public boolean isThisMechanic(Sign sign) {
         return isThisMechanic(sign, false);
@@ -89,30 +99,17 @@ public abstract class SignMechanicListener extends BlockMechanicListener {
 
     private boolean isThisMechanic(Sign sign, boolean passive) {
         String id = SignUtil.getMechanicsIdentifier(sign);
-        if (getIdentifiers() == null)
-            return true;
-
-        for (String s : getIdentifiers()) {
-            if (s.equals(id))
-                return true;
-        }
-        if (passive) {
-            for (String s : getPassiveIdentifiers()) {
-                if (s.equals(id))
-                    return true;
-            }
-        }
-        return false;
+        return getIdentifiers() == null || (passive ? getIdentifiers().contains(id) || getPassiveIdentifiers().contains(id) : getIdentifiers().contains(id));
     }
 
     @Override
-    public Material[] getMechanicTargets() {
-        return new Material[]{Material.WALL_SIGN, Material.SIGN_POST};
+    public List<Material> getMechanicTargets() {
+        return Arrays.asList(Material.WALL_SIGN, Material.SIGN_POST);
     }
 
     protected void loadData(Sign sign) throws PlayerNotifier {
         if (sign == null) {
-            BetterMechanics.log("A RedstoneEvent was thrown to a SignMechanic, but no Sign was passed.", Level.WARNING);
+            BetterMechanics.log("An event was thrown to a SignMechanic, but no Sign was passed.", Level.WARNING);
             return;
         }
 
@@ -174,7 +171,7 @@ public abstract class SignMechanicListener extends BlockMechanicListener {
                 }
             }
             if (hasBlockBag() && changed > 0) {
-                if (!blockBag.storeItems(blockMap.getMaterial().getId(), blockMap.getMaterialData(), changed)) {
+                if (!blockBag.removeItems(blockMap.getMaterial().getId(), blockMap.getMaterialData(), changed)) {
                     PlayerNotifier playerNotifier = new PlayerNotifier(
                             "There are not enough items in the chest. Still need " + changed + " of type " + blockMap.getMaterial().name() + ".",
                             PlayerNotifier.Level.WARNING,
@@ -195,7 +192,7 @@ public abstract class SignMechanicListener extends BlockMechanicListener {
         }
     }
 
-    protected boolean isOpen() throws PlayerNotifier{
+    protected boolean isOpen() throws PlayerNotifier {
         if (hasBlockMapper()) {
             for (Block b : blockMap.getSet()) {
                 if (b.getTypeId() == blockMap.getMaterial().getId() && b.getData() == blockMap.getMaterialData())

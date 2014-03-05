@@ -229,7 +229,7 @@ public class ConfigHandler {
 
         public PenConfig() {
             enabled = configuration.getBoolean("pen.enabled", true);
-            penTool = Material.getMaterial(configuration.getInt("pen.material", 280));
+            penTool = Material.getMaterial(configuration.getInt("pen.material", Material.COAL.getId()));
         }
 
         public boolean isEnabled() {
@@ -247,7 +247,7 @@ public class ConfigHandler {
 
         public CyclerConfig() {
             enabled = configuration.getBoolean("cycler.enabled", true);
-            cyclerTool = Material.getMaterial(configuration.getInt("cycler.material", 280));
+            cyclerTool = Material.getMaterial(configuration.getInt("cycler.material", Material.WOOD_HOE.getId()));
         }
 
         public boolean isEnabled() {
@@ -425,7 +425,7 @@ public class ConfigHandler {
         public AmmeterConfig() {
             enabled = configuration.getBoolean("ammeter.enabled", true);
             //TODO: check if tool id is correct (coal)
-            tool = Material.getMaterial(configuration.getInt("ammeter.tool", 283));
+            tool = Material.getMaterial(configuration.getInt("ammeter.tool", Material.COAL.getId()));
         }
 
         public boolean isEnabled() {

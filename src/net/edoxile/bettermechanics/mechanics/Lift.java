@@ -28,14 +28,17 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  *
  * @author Edoxile
  */
 public class Lift extends SignMechanicListener {
-    private final String[] identifiers = new String[]{"[Lift Up]", "[Lift Down]"};
-    private final String[] passiveIdentifiers = new String[]{"[Lift]"};
+    private final List<String> identifiers = Arrays.asList("[Lift Up]", "[Lift Down]");
+    private final List<String> passiveIdentifiers = Arrays.asList("[Lift]");
 
     private ConfigHandler.LiftConfig config = BetterMechanics.getInstance().getConfigHandler().getLiftConfig();
 
@@ -69,12 +72,12 @@ public class Lift extends SignMechanicListener {
     }
 
     @Override
-    public String[] getIdentifiers() {
+    public List<String> getIdentifiers() {
         return identifiers;
     }
 
     @Override
-    public String[] getPassiveIdentifiers() {
+    public List<String> getPassiveIdentifiers() {
         return passiveIdentifiers;
     }
 
@@ -89,7 +92,7 @@ public class Lift extends SignMechanicListener {
     }
 
     @Override
-    public Material[] getMechanicActivators() {
+    public List<Material> getMechanicActivators() {
         return voidActor;
     }
 

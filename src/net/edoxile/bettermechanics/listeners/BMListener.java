@@ -27,6 +27,7 @@ import net.edoxile.bettermechanics.handlers.PermissionHandler;
 import net.edoxile.bettermechanics.mechanics.interfaces.SignMechanicListener;
 import net.edoxile.bettermechanics.models.Pair;
 import net.edoxile.bettermechanics.utils.SignUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
@@ -47,7 +48,7 @@ public class BMListener implements Listener {
     private final BlockFace[] blockFaces = new BlockFace[]{
             BlockFace.UP, BlockFace.DOWN, BlockFace.WEST, BlockFace.EAST, BlockFace.NORTH, BlockFace.SOUTH
     };
-    private HashMap<String,Pair<String>> idMap = new HashMap<String, Pair<String>>();
+    private HashMap<String, Pair<String>> idMap = new HashMap<String, Pair<String>>();
 
     public BMListener(BetterMechanics plugin) {
         mechanicsHandler = plugin.getMechanicsHandler();
@@ -107,8 +108,12 @@ public class BMListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.isCancelled())
             return;
-
-        PlayerEvent playerEvent = new PlayerEvent(event.getBlock(), PlayerEvent.Action.BREAK, event.getPlayer(), event);
+        PlayerEvent playerEvent;
+        if (SignUtil.isSign(event.getBlock())) {
+            playerEvent = new PlayerEvent(SignUtil.getSign(event.getBlock()), PlayerEvent.Action.BREAK, event.getPlayer(), event);
+        }else{
+            playerEvent = new PlayerEvent(event.getBlock(), PlayerEvent.Action.BREAK, event.getPlayer(), event);
+        }
         mechanicsHandler.callPlayerEvent(playerEvent);
         event.setCancelled(playerEvent.isCancelled());
     }
@@ -118,7 +123,12 @@ public class BMListener implements Listener {
         if (event.isCancelled())
             return;
 
-        PlayerEvent playerEvent = new PlayerEvent(event.getBlock(), PlayerEvent.Action.PLACE, event.getPlayer(), event);
+        PlayerEvent playerEvent;
+        if(SignUtil.isSign(event.getBlockAgainst())) {
+            playerEvent = new PlayerEvent(SignUtil.getSign(event.getBlockAgainst()), PlayerEvent.Action.PLACE, event.getPlayer(), event);
+        } else{
+            playerEvent = new PlayerEvent(event.getBlock(), PlayerEvent.Action.PLACE, event.getPlayer(), event);
+        }
         mechanicsHandler.callPlayerEvent(playerEvent);
         event.setCancelled(playerEvent.isCancelled());
     }
@@ -131,7 +141,7 @@ public class BMListener implements Listener {
         String line = event.getLine(1);
         Pair<String> data = idMap.get(line);
         if (data != null) {
-            if (PermissionHandler.getInstance().playerHasNode(event.getPlayer(), data.getSecond()+".build")) {
+            if (PermissionHandler.getInstance().playerHasNode(event.getPlayer(), data.getSecond() + ".build")) {
                 event.setLine(1, data.getFirst());
             } else {
                 event.setCancelled(true);

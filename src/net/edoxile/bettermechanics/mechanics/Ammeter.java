@@ -25,6 +25,9 @@ import net.edoxile.bettermechanics.mechanics.interfaces.BlockMechanicListener;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -33,8 +36,8 @@ import org.bukkit.Material;
 public class Ammeter extends BlockMechanicListener {
 
     private ConfigHandler.AmmeterConfig config = BetterMechanics.getInstance().getConfigHandler().getAmmeterConfig();
-    private Material[] tool = new Material[]{config.getTool()};
-    private Material[] target = new Material[]{Material.REDSTONE_WIRE};
+    private List<Material> tool = Arrays.asList(config.getTool());
+    private List<Material> target = Arrays.asList(Material.REDSTONE_WIRE);
 
     @Override
     public boolean isTriggeredByRedstone() {
@@ -47,12 +50,12 @@ public class Ammeter extends BlockMechanicListener {
     }
 
     @Override
-    public Material[] getMechanicActivators() {
+    public List<Material> getMechanicActivators() {
         return tool;
     }
 
     @Override
-    public Material[] getMechanicTargets() {
+    public List<Material> getMechanicTargets() {
         return target;
     }
 
@@ -67,7 +70,7 @@ public class Ammeter extends BlockMechanicListener {
     }
 
     @Override
-    public void onBlockRightClick(PlayerEvent event){
+    public void onBlockRightClick(PlayerEvent event) {
         String msg = "The current is: [" + ChatColor.GREEN;
         for (byte i = 0; i < event.getBlock().getData(); i++) {
             msg += "|";

@@ -37,6 +37,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -117,12 +118,12 @@ public class Cauldron extends BlockMechanicListener implements IMechanicCommandL
     }
 
     @Override
-    public Material[] getMechanicActivators() {
+    public List<Material> getMechanicActivators() {
         return voidActor;
     }
 
     @Override
-    public Material[] getMechanicTargets() {
+    public List<Material> getMechanicTargets() {
         return voidActor;
     }
 

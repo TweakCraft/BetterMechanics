@@ -27,6 +27,9 @@ import net.edoxile.bettermechanics.mechanics.interfaces.SignMechanicListener;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -35,9 +38,9 @@ import org.bukkit.Material;
 public class Cycler extends BlockMechanicListener {
 
     private static ConfigHandler.CyclerConfig config = BetterMechanics.getInstance().getConfigHandler().getCyclerConfig();
-    private static Material[] activator = new Material[]{config.getCyclerTool()};
+    private static List<Material> activator = Arrays.asList(config.getCyclerTool());
 
-    private final Material[] targets = new Material[]{
+    private final List<Material> targets = Arrays.asList(
             Material.CHEST,
 
             Material.LEVER,
@@ -58,7 +61,7 @@ public class Cycler extends BlockMechanicListener {
 
             Material.IRON_DOOR,
             Material.WOOD_DOOR
-    };
+    );
 
     @Override
     public boolean isTriggeredByRedstone() {
@@ -71,12 +74,12 @@ public class Cycler extends BlockMechanicListener {
     }
 
     @Override
-    public Material[] getMechanicActivators() {
+    public List<Material> getMechanicActivators() {
         return activator;
     }
 
     @Override
-    public Material[] getMechanicTargets() {
+    public List<Material> getMechanicTargets() {
         return targets;
     }
 
@@ -212,13 +215,13 @@ public class Cycler extends BlockMechanicListener {
         }
 
         @Override
-        public String[] getIdentifiers() {
-            return voidTarget;
+        public List<String> getIdentifiers() {
+            return voidIdentifiers;
         }
 
         @Override
-        public String[] getPassiveIdentifiers() {
-            return null;
+        public List<String> getPassiveIdentifiers() {
+            return voidIdentifiers;
         }
 
         @Override
@@ -232,7 +235,7 @@ public class Cycler extends BlockMechanicListener {
         }
 
         @Override
-        public Material[] getMechanicActivators() {
+        public List<Material> getMechanicActivators() {
             return activator;
         }
 

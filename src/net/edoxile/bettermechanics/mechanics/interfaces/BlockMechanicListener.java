@@ -20,7 +20,11 @@ package net.edoxile.bettermechanics.mechanics.interfaces;
 
 import net.edoxile.bettermechanics.event.PlayerEvent;
 import net.edoxile.bettermechanics.event.RedstoneEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +33,8 @@ import org.bukkit.Material;
  */
 public abstract class BlockMechanicListener implements IMechanicListener {
 
-    protected Material[] voidActor = new Material[]{Material.AIR};
+    protected List<Material> voidActor = Arrays.asList(Material.AIR);
+
 
     public void onBlockRightClick(PlayerEvent event) {
     }
@@ -53,7 +58,13 @@ public abstract class BlockMechanicListener implements IMechanicListener {
 
     public abstract boolean isTriggeredByPlayer();
 
-    public abstract Material[] getMechanicActivators();
+    public abstract List<Material> getMechanicActivators();
 
-    public abstract Material[] getMechanicTargets();
+    public abstract List<Material> getMechanicTargets();
+
+    public boolean isThisMechanic(Material activator, Material target) {
+        return (
+                getMechanicActivators().contains(Material.AIR) || getMechanicActivators().contains(activator))
+                && (getMechanicTargets().contains(Material.AIR) || getMechanicTargets().contains(target));
+    }
 }

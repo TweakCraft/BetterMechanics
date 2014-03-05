@@ -27,6 +27,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -34,11 +37,11 @@ import org.bukkit.block.Sign;
  */
 public class TeleLift extends Lift {
 
-    private final String[] identifiers = new String[]{"[TeleLift]"};
+    private final List<String> identifiers = Arrays.asList("[TeleLift]");
     private ConfigHandler.TeleLiftConfig config = BetterMechanics.getInstance().getConfigHandler().getTeleLiftConfig();
 
     @Override
-    public String[] getIdentifiers() {
+    public List<String> getIdentifiers() {
         return identifiers;
     }
 

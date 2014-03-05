@@ -33,12 +33,56 @@ public class SignUtil {
 
     //TODO: lolwhut, this has to be simplified
     public static BlockFace getFacing(Sign sign) {
-        BlockState state = sign.getBlock().getState();
-        if (state instanceof org.bukkit.material.Sign) {
-            org.bukkit.material.Sign s = (org.bukkit.material.Sign) state;
-            return s.getFacing();
+        if(sign.getType() == Material.WALL_SIGN){
+            switch(sign.getData().getData()){
+                case 0x2:
+                    return BlockFace.NORTH;
+                case 0x3:
+                    return BlockFace.SOUTH;
+                case 0x4:
+                    return BlockFace.WEST;
+                case 0x5:
+                    return BlockFace.EAST;
+                default:
+                    return BlockFace.SELF;
+            }
         } else {
-            return BlockFace.SELF;
+            switch (sign.getData().getData()){
+                case 0x0:
+                    return BlockFace.SOUTH;
+                case 0x1:
+                    return BlockFace.SOUTH_SOUTH_WEST;
+                case 0x2:
+                    return BlockFace.SOUTH_WEST;
+                case 0x3:
+                    return BlockFace.WEST_SOUTH_WEST;
+                case 0x4:
+                    return BlockFace.WEST;
+                case 0x5:
+                    return BlockFace.WEST_NORTH_WEST;
+                case 0x6:
+                    return BlockFace.NORTH_WEST;
+                case 0x7:
+                    return BlockFace.NORTH_NORTH_WEST;
+                case 0x8:
+                    return BlockFace.NORTH;
+                case 0x9:
+                    return BlockFace.NORTH_NORTH_EAST;
+                case 0xa:
+                    return BlockFace.NORTH_EAST;
+                case 0xb:
+                    return BlockFace.EAST_NORTH_EAST;
+                case 0xc:
+                    return BlockFace.EAST;
+                case 0xd:
+                    return BlockFace.EAST_SOUTH_EAST;
+                case 0xe:
+                    return BlockFace.SOUTH_EAST;
+                case 0xf:
+                    return BlockFace.SOUTH_SOUTH_EAST;
+                default:
+                    return BlockFace.SELF;
+            }
         }
     }
 
@@ -83,7 +127,10 @@ public class SignUtil {
     }
 
     public static String getMechanicsIdentifier(Sign sign) {
-        return sign.getLine(1);
+        String id = sign.getLine(1);
+        if (id.charAt(0) == '[' && id.charAt(id.length() - 1) == ']')
+            id = id.substring(1, id.length() - 1);
+        return id;
     }
 
     public static void setMechanicsIdentifier(Sign sign, String identifier) {
@@ -114,11 +161,11 @@ public class SignUtil {
         }
     }
 
-    public static boolean isWallSign(Block b){
+    public static boolean isWallSign(Block b) {
         return b.getType() == Material.WALL_SIGN;
     }
 
-    public static boolean isWallSign(Sign s){
+    public static boolean isWallSign(Sign s) {
         return isWallSign(s.getBlock());
     }
 }

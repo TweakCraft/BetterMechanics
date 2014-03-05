@@ -21,11 +21,8 @@ cauldron:
     enabled: true
 pen:
     enabled: true
-    material: 263
 cycler:
     enabled: true
-# TODO: check material number (wooden hoe)
-    material: 288
 power-block:
     enabled: true
     blocks:

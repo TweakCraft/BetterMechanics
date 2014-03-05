@@ -34,7 +34,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import static net.edoxile.bettermechanics.utils.BlockUtil.*;
 
@@ -46,7 +48,7 @@ import static net.edoxile.bettermechanics.utils.BlockUtil.*;
 public class Gate extends SignMechanicListener {
 
     private final ConfigHandler.GateConfig config = BetterMechanics.getInstance().getConfigHandler().getGateConfig();
-    private final String[] identifiers = new String[]{"[Gate]", "[dGate]", "[sGate]"};
+    private final List<String> identifiers = Arrays.asList("[Gate]", "[dGate]", "[sGate]");
 
     @Override
     public void onSignPowerOn(RedstoneEvent event) {
@@ -91,13 +93,13 @@ public class Gate extends SignMechanicListener {
     }
 
     @Override
-    public String[] getIdentifiers() {
+    public List<String> getIdentifiers() {
         return identifiers;
     }
 
     @Override
-    public String[] getPassiveIdentifiers() {
-        return null;
+    public List<String> getPassiveIdentifiers() {
+        return voidIdentifiers;
     }
 
     @Override
@@ -121,7 +123,7 @@ public class Gate extends SignMechanicListener {
     }
 
     @Override
-    public Material[] getMechanicActivators() {
+    public List<Material> getMechanicActivators() {
         return voidActor;
     }
 

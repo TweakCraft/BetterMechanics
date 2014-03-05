@@ -19,10 +19,12 @@
 package net.edoxile.bettermechanics.mechanics;
 
 import net.edoxile.bettermechanics.BetterMechanics;
+import net.edoxile.bettermechanics.event.PlayerEvent;
 import net.edoxile.bettermechanics.handlers.ConfigHandler;
 import net.edoxile.bettermechanics.handlers.PermissionHandler;
 import net.edoxile.bettermechanics.mechanics.interfaces.IMechanicCommandListener;
 import net.edoxile.bettermechanics.mechanics.interfaces.SignMechanicListener;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -30,7 +32,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import static net.edoxile.bettermechanics.utils.StringUtil.merge;
 
@@ -42,18 +46,22 @@ import static net.edoxile.bettermechanics.utils.StringUtil.merge;
 public class Pen extends SignMechanicListener implements IMechanicCommandListener {
     ConfigHandler.PenConfig config = BetterMechanics.getInstance().getConfigHandler().getPenConfig();
 
-    private final Material[] activator = new Material[]{config.getPenTool()};
+    private final List<Material> activator = Arrays.asList(config.getPenTool());
 
-    public void onPlayerRightClickSign(Player player, Sign sign) {
-        if (PermissionHandler.getInstance().playerHasNode(player, "pen")) {
-            setLines(player, sign);
+    @Override
+    public void onPlayerRightClickSign(PlayerEvent event) {
+        if (PermissionHandler.getInstance().playerHasNode(event.getPlayer(), "pen")) {
+            setLines(event.getPlayer(), event.getSign());
         } else {
-            player.sendMessage(ChatColor.DARK_RED + "You aren't allowed to use /pen!");
+            event.getPlayer().sendMessage(ChatColor.DARK_RED + "You aren't allowed to use /pen!");
         }
     }
 
-    public void onPlayerLeftClickSign(Player player, Sign sign) {
-        if (PermissionHandler.getInstance().hasPermission(player, sign.getBlock(), "pen", PermissionHandler.Checks.ALL)) {
+    @Override
+    public void onPlayerLeftClickSign(PlayerEvent event) {
+        if (PermissionHandler.getInstance().hasPermission(event.getPlayer(), event.getSign().getBlock(), "pen", PermissionHandler.Checks.ALL)) {
+            Player player = event.getPlayer();
+            Sign sign = event.getSign();
             String[] lines = getLines(player);
             if (lines != null) {
                 for (int i = 0; i < 4; i++) {
@@ -65,8 +73,13 @@ public class Pen extends SignMechanicListener implements IMechanicCommandListene
                 player.sendMessage(ChatColor.DARK_RED + "You haven't set the text to put on this sign yet!");
             }
         } else {
-            player.sendMessage(ChatColor.DARK_RED + "You aren't allowed to use /pen!");
+            event.getPlayer().sendMessage(ChatColor.DARK_RED + "You aren't allowed to use /pen!");
         }
+    }
+
+    @Override
+    public void onPlayerBreakSign(PlayerEvent event){
+        event.setCancelled(true);
     }
 
     @Override
@@ -114,7 +127,7 @@ public class Pen extends SignMechanicListener implements IMechanicCommandListene
                             player.sendMessage("/pen clear | clears the current text");
                             player.sendMessage("/pen dump | dumps the current text");
                         } else {
-                            player.sendMessage(ChatColor.DARK_RED + "Incorrect usage. Usage: /pen <set|clear>|setline|help>");
+                            player.sendMessage(ChatColor.DARK_RED + "Incorrect usage. Usage: /pen <set|clear|setline|help>");
                         }
                     }
                 } else {
@@ -130,13 +143,13 @@ public class Pen extends SignMechanicListener implements IMechanicCommandListene
     }
 
     @Override
-    public String[] getIdentifiers() {
-        return voidTarget;
+    public List<String> getIdentifiers() {
+        return voidIdentifiers;
     }
 
     @Override
-    public String[] getPassiveIdentifiers() {
-        return null;
+    public List<String> getPassiveIdentifiers() {
+        return voidIdentifiers;
     }
 
     @Override
@@ -160,7 +173,7 @@ public class Pen extends SignMechanicListener implements IMechanicCommandListene
     }
 
     @Override
-    public Material[] getMechanicActivators() {
+    public List<Material> getMechanicActivators() {
         return activator;
     }
 

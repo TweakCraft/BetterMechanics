@@ -27,6 +27,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -79,12 +80,12 @@ public class PowerBlock extends BlockMechanicListener {
     }
 
     @Override
-    public Material[] getMechanicActivators() {
-        return null;
+    public List<Material> getMechanicActivators() {
+        return voidActor;
     }
 
     @Override
-    public Material[] getMechanicTargets() {
+    public List<Material> getMechanicTargets() {
         return voidActor;
     }
 
