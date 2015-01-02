@@ -31,6 +31,25 @@ import java.util.HashMap;
  */
 public class Pen {
     private static HashMap<Player, String[]> dataMap = new HashMap<Player, String[]>();
+    private static HashMap<Player, PenMode> penModeMap = new HashMap<Player, PenMode>();
+
+    public static enum PenMode {
+        NORMAL,
+        FIXIC
+    }
+
+    public static PenMode getMode(Player player) {
+        if(penModeMap.containsKey(player))
+            return penModeMap.get(player);
+        else {
+            penModeMap.put(player, PenMode.NORMAL);
+            return PenMode.NORMAL;
+        }
+    }
+
+    public static void setMode(Player player, PenMode mode) {
+        penModeMap.put(player, mode);
+    }
 
     public static void setLine(Player player, String[] args) {
         try {

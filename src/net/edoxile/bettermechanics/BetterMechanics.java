@@ -109,6 +109,11 @@ public class BetterMechanics extends JavaPlugin {
                             } else {
                                 Pen.setLines(player, args);
                             }
+                        } else if (args[0].equalsIgnoreCase("toggle")) {
+                            Pen.PenMode mode = Pen.getMode(player);
+                            Pen.PenMode newMode = mode == Pen.PenMode.NORMAL ? Pen.PenMode.FIXIC : Pen.PenMode.NORMAL;
+                            player.sendMessage(ChatColor.GOLD + "Pen is now in "+newMode+" mode.");
+                            Pen.setMode(player, newMode);
                         } else if (args[0].equalsIgnoreCase("clear")) {
                             Pen.clear(player);
                             player.sendMessage(ChatColor.GOLD + "Pen data cleared.");
@@ -133,8 +138,9 @@ public class BetterMechanics extends JavaPlugin {
                             player.sendMessage("/pen clearline [line] | clears the specified line");
                             player.sendMessage("/pen clear | clears the current text");
                             player.sendMessage("/pen dump | dumps the current text");
+                            player.sendMessage("/pen toglge | toggle between modes (FIXIC|Normal)");
                         } else {
-                            player.sendMessage(ChatColor.DARK_RED + "Incorrect usage. Usage: /pen <set|clear>|setline|help>");
+                            player.sendMessage(ChatColor.DARK_RED + "Incorrect usage. Usage: /pen <set|clear>|setline|help|toggle>");
                         }
                     }
                     return true;

@@ -23,6 +23,7 @@ import com.zones.Zones;
 import com.zones.model.ZoneBase;
 import net.edoxile.bettermechanics.BetterMechanics;
 import net.edoxile.bettermechanics.exceptions.ConfigWriteException;
+import net.edoxile.bettermechanics.mechanics.Cycler;
 import net.edoxile.bettermechanics.utils.CauldronCookbook;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -43,11 +44,14 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Logger;
 
+// TODO: REMOVE?
+
 /**
  * Created by IntelliJ IDEA.
  * User: Edoxile
  */
 public class MechanicsConfig {
+    /*
     private static final Logger log = Logger.getLogger("Minecraft");
     private static BetterMechanics plugin;
     private static YamlConfiguration config;
@@ -60,6 +64,7 @@ public class MechanicsConfig {
     public HiddenSwitchConfig hiddenSwitchConfig;
     public AmmeterConfig ammeterConfig;
     public CauldronConfig cauldronConfig;
+    public CyclerConfig cyclerConfig;
     public PermissionConfig permissionConfig;
     public PenConfig penConfig;
     public boolean useTweakcraftUtils;
@@ -87,6 +92,7 @@ public class MechanicsConfig {
         ammeterConfig = new AmmeterConfig();
         cauldronConfig = new CauldronConfig();
         permissionConfig = new PermissionConfig();
+        cyclerConfig = new CyclerConfig();
         penConfig = new PenConfig();
         useTweakcraftUtils = config.getBoolean("use-tweakcraftutils", false);
     }
@@ -254,20 +260,6 @@ public class MechanicsConfig {
             }
         }
 
-        /*
-        private void setupPermissions() {
-            Plugin permissionsPlugin = plugin.getServer().getPluginManager().getPlugin("Permissions");
-
-            if (this.permissionHandler == null) {
-                if (permissionsPlugin != null) {
-                    this.permissionHandler = ((Permissions) permissionsPlugin).getHandler();
-                } else {
-                    log.info("[BetterMechanics] Permission system not detected, defaulting to OP");
-                }
-            }
-        }
-        */
-
         private void setupZones() {
             Plugin z = plugin.getServer().getPluginManager().getPlugin("Zones");
             if (zones == null) {
@@ -304,11 +296,7 @@ public class MechanicsConfig {
         }
 
         public boolean checkPermissions(Player player, String permission) {
-            /* if (permissionHandler == null) {
-                 return true;
-             } else { */
             return player.hasPermission("bettermechanics." + permission);
-            /* } */
         }
 
         public boolean checkWorldGuard(Player player, Block clickedBlock) {
@@ -336,6 +324,33 @@ public class MechanicsConfig {
         }
     }
 
+    public class CyclerConfig {
+
+        private boolean enabled = true;
+        private boolean soundEnabled = true;
+
+        public CyclerConfig() {
+            this.enabled = config.getBoolean("cycler.enabled", true);
+            this.soundEnabled = config.getBoolean("cycler.sounds", true);
+        }
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public boolean isSoundEnabled() {
+            return soundEnabled;
+        }
+
+        public void setSoundEnabled(boolean soundEnabled) {
+            this.soundEnabled = soundEnabled;
+        }
+    }
+
     public PermissionConfig getPermissionConfig() {
         return this.permissionConfig;
     }
@@ -354,6 +369,10 @@ public class MechanicsConfig {
 
     public HiddenSwitchConfig getHiddenSwitchConfig() {
         return this.hiddenSwitchConfig;
+    }
+
+    public CyclerConfig getCyclerConfig() {
+        return this.cyclerConfig;
     }
 
     public LiftConfig getLiftConfig() {
@@ -395,4 +414,5 @@ public class MechanicsConfig {
             }
         }
     }
+    */
 }

@@ -19,9 +19,9 @@
 package net.edoxile.bettermechanics.mechanics;
 
 import net.edoxile.bettermechanics.utils.MechanicsConfig;
-import org.bukkit.Bukkit;
-import static org.bukkit.Material.REDSTONE_COMPARATOR;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 /**
@@ -30,15 +30,32 @@ import org.bukkit.entity.Player;
  * @author Edoxile
  */
 public class Cycler {
+
+
     public static boolean cycle(Player p, Block b, MechanicsConfig c) {
         if (c.getPermissionConfig().checkZonesCreate(p, b)) {
             byte newByte = -1;
             switch(b.getType()) {
                 case CHEST:
-                    newByte = (byte) (b.getData() + 1);
-                    newByte = (newByte == 6) ? 2 : newByte;
+                case TRAPPED_CHEST:
+                    // Check for other chest block in the vicinity.
+                    Block b2 = null;
+                    for(BlockFace bf : new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}) {
+                        Block tmp = b.getRelative(bf);
+                        if (b2 == null && tmp.getType() == b.getType())
+                            b2 = tmp;
+                    }
+                    if(b2 == null) {
+                        newByte = (byte) (b.getData() + 1);
+                        newByte = (newByte == 6) ? 2 : newByte;
+                    } else {
+                        newByte = (byte) (b.getData() ^ 1);
+                        // Also set the other chests' data!
+                        b2.setData(newByte);
+                    }
                     break;
                 case LOG:
+                case LOG_2:
                     newByte = (byte) (b.getData() + 4);
                     newByte = (newByte > 15) ? (byte) (newByte - 16) : newByte;
                     break;
@@ -50,11 +67,13 @@ public class Cycler {
                 case QUARTZ_STAIRS:
                 case SANDSTONE_STAIRS:
                 case SMOOTH_STAIRS:
+                case ACACIA_STAIRS:
+                case DARK_OAK_STAIRS:
                 case SPRUCE_WOOD_STAIRS:
                 case WOOD_STAIRS: // nog niet
                     byte data = (byte) (b.getData());
                     byte lastTwo = (byte) ((data & 3) + 1);
-                    if (lastTwo == 4){
+                    if (lastTwo == 4) {
                         // flip bit 4, clear bits 2 and 1
                         newByte = (byte) (((data ^ 4) & 12));
                     } else {
@@ -106,7 +125,13 @@ public class Cycler {
             }
             if(newByte != -1) {
                 b.setData(newByte);
+
+                if(c.getCyclerConfig().isSoundEnabled()) {
+                    Sound s = Sound.DIG_WOOD;
+                    p.playSound(p.getLocation(), s, 3.0f, 1.0f);
+                }
             }
+
             return true;
         } else {
             return false;

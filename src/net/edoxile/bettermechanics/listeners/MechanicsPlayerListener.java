@@ -47,12 +47,14 @@ public class MechanicsPlayerListener implements Listener {
     private static final Logger log = Logger.getLogger("Minecraft");
     private MechanicsConfig config;
     private MechanicsConfig.PermissionConfig permissions;
+    private MechanicsConfig.CyclerConfig cyclerConfig;
     private BlockBagManager bagmanager;
 
     public MechanicsPlayerListener(MechanicsConfig c, BlockBagManager manager) {
         config = c;
         bagmanager = manager;
         permissions = c.getPermissionConfig();
+        cyclerConfig = c.getCyclerConfig();
     }
 
     public void setConfig(MechanicsConfig c) {
@@ -172,28 +174,48 @@ public class MechanicsPlayerListener implements Listener {
                         }
                     } else if (event.getPlayer().getItemInHand().getType() == config.getPenConfig().penMaterial) {
                         if (permissions.check(event.getPlayer(), "pen", event.getClickedBlock(), false)) {
-                            String[] text = Pen.getLines(event.getPlayer());
-                            if (text != null) {
-                                String firstline = ((Sign) sign.getBlock().getState()).getLine(0);
-                                Boolean LocketteSign = firstline.equals("[Private]") || firstline.equals("[More Users]");
-                                if (!LocketteSign) {
+                            if(Pen.getMode(event.getPlayer()) == Pen.PenMode.FIXIC) {
+                                String[] text = sign.getLines();
+                                if(text[1] != null &&  ( text[1].startsWith("Bridge") || text[1].startsWith("MC") || text[1].startsWith("Gate") || text[1].startsWith("Lift") )) {
+
+                                    String fixedStr = "["+sign.getLine(1)+"]";
+                                    text[1] = fixedStr;
+
                                     SignChangeEvent evt = new SignChangeEvent(sign.getBlock(), event.getPlayer(), text);
                                     event.getPlayer().getServer().getPluginManager().callEvent(evt);
                                     if (!evt.isCancelled()) {
-                                        for (int i = 0; i < text.length; i++) {
+                                        /* for (int i = 0; i < text.length; i++) {
                                             sign.setLine(i, text[i]);
-                                        }
+                                        } */
+                                        sign.setLine(1, fixedStr);
                                         sign.update(true);
-                                        event.getPlayer().sendMessage(ChatColor.GOLD + "You edited the sign!");
+                                        event.getPlayer().sendMessage(ChatColor.GOLD + "Fixed IC! ("+fixedStr+")");
                                     }
-                                } else {
-                                    event.getPlayer().sendMessage(ChatColor.GOLD + "I'm not changing lockette signs!");
-                                    event.getPlayer().sendMessage(ChatColor.GOLD + "use /lockette!");
                                 }
                             } else {
-                                text = sign.getLines();
-                                Pen.setText(event.getPlayer(), text);
-                                event.getPlayer().sendMessage(ChatColor.GOLD + "Loaded sign text in memory.");
+                                String[] text = Pen.getLines(event.getPlayer());
+                                if (text != null) {
+                                    String firstline = ((Sign) sign.getBlock().getState()).getLine(0);
+                                    Boolean LocketteSign = firstline.equals("[Private]") || firstline.equals("[More Users]");
+                                    if (!LocketteSign) {
+                                        SignChangeEvent evt = new SignChangeEvent(sign.getBlock(), event.getPlayer(), text);
+                                        event.getPlayer().getServer().getPluginManager().callEvent(evt);
+                                        if (!evt.isCancelled()) {
+                                            for (int i = 0; i < text.length; i++) {
+                                                sign.setLine(i, text[i]);
+                                            }
+                                            sign.update(true);
+                                            event.getPlayer().sendMessage(ChatColor.GOLD + "You edited the sign!");
+                                        }
+                                    } else {
+                                        event.getPlayer().sendMessage(ChatColor.GOLD + "I'm not changing lockette signs!");
+                                        event.getPlayer().sendMessage(ChatColor.GOLD + "use /lockette!");
+                                    }
+                                } else {
+                                    text = sign.getLines();
+                                    Pen.setText(event.getPlayer(), text);
+                                    event.getPlayer().sendMessage(ChatColor.GOLD + "Loaded sign text in memory.");
+                                }
                             }
                         }
                     }
@@ -204,7 +226,7 @@ public class MechanicsPlayerListener implements Listener {
                 }
                 Ammeter ammeter = new Ammeter(config, event.getClickedBlock(), event.getPlayer());
                 ammeter.measure();
-            } else if (event.getPlayer().getItemInHand().getTypeId() == Material.WOOD_HOE.getId()) {
+            } else if (event.getPlayer().getItemInHand().getTypeId() == Material.WOOD_HOE.getId() && cyclerConfig.isEnabled()) {
                 if (!Cycler.cycle(event.getPlayer(), event.getClickedBlock(), config)) {
                     event.getPlayer().sendMessage(ChatColor.DARK_RED + "You don't have permissions to cycle chests here!");
                 } else {

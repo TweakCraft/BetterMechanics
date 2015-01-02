@@ -61,6 +61,7 @@ public class MechanicsConfig {
     public CauldronConfig cauldronConfig;
     public PermissionConfig permissionConfig;
     public PenConfig penConfig;
+    public CyclerConfig cyclerConfig;
     public BlockBagConfig blockBagConfig;
     public boolean useTweakcraftUtils;
 
@@ -88,6 +89,7 @@ public class MechanicsConfig {
         ammeterConfig = new AmmeterConfig();
         cauldronConfig = new CauldronConfig();
         blockBagConfig = new BlockBagConfig();
+        cyclerConfig = new CyclerConfig();
         permissionConfig = new PermissionConfig();
         penConfig = new PenConfig();
         useTweakcraftUtils = config.getBoolean("use-tweakcraftutils", false);
@@ -357,6 +359,33 @@ public class MechanicsConfig {
         }
     }
 
+    public class CyclerConfig {
+
+        private boolean enabled = true;
+        private boolean soundEnabled = true;
+
+        public CyclerConfig() {
+            this.enabled = config.getBoolean("cycler.enabled", true);
+            this.soundEnabled = config.getBoolean("cycler.sounds", true);
+        }
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public boolean isSoundEnabled() {
+            return soundEnabled;
+        }
+
+        public void setSoundEnabled(boolean soundEnabled) {
+            this.soundEnabled = soundEnabled;
+        }
+    }
+
     public PermissionConfig getPermissionConfig() {
         return this.permissionConfig;
     }
@@ -379,6 +408,10 @@ public class MechanicsConfig {
 
     public HiddenSwitchConfig getHiddenSwitchConfig() {
         return this.hiddenSwitchConfig;
+    }
+
+    public CyclerConfig getCyclerConfig() {
+        return this.cyclerConfig;
     }
 
     public LiftConfig getLiftConfig() {
