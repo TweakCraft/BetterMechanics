@@ -138,7 +138,7 @@ public class BetterMechanics extends JavaPlugin {
                             player.sendMessage("/pen clearline [line] | clears the specified line");
                             player.sendMessage("/pen clear | clears the current text");
                             player.sendMessage("/pen dump | dumps the current text");
-                            player.sendMessage("/pen toglge | toggle between modes (FIXIC|Normal)");
+                            player.sendMessage("/pen toggle | toggle between modes (FIXIC|Normal)");
                         } else {
                             player.sendMessage(ChatColor.DARK_RED + "Incorrect usage. Usage: /pen <set|clear>|setline|help|toggle>");
                         }
