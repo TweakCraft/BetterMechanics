@@ -176,7 +176,8 @@ public class MechanicsPlayerListener implements Listener {
                         if (permissions.check(event.getPlayer(), "pen", event.getClickedBlock(), false)) {
                             if(Pen.getMode(event.getPlayer()) == Pen.PenMode.FIXIC) {
                                 String[] text = sign.getLines();
-                                if(text[1] != null &&  ( text[1].startsWith("Bridge") || text[1].startsWith("MC") || text[1].startsWith("Gate") || text[1].startsWith("Lift") )) {
+                                if(text[1] != null &&  ( text[1].startsWith("Bridge") || text[1].startsWith("MC") || text[1].startsWith("Gate") || text[1].startsWith("Lift") || text[1].equalsIgnoreCase("x")
+                                || text[1].equalsIgnoreCase("TeleLift"))) {
 
                                     String fixedStr = "["+sign.getLine(1)+"]";
                                     text[1] = fixedStr;
@@ -190,6 +191,18 @@ public class MechanicsPlayerListener implements Listener {
                                         sign.setLine(1, fixedStr);
                                         sign.update(true);
                                         event.getPlayer().sendMessage(ChatColor.GOLD + "Fixed IC! ("+fixedStr+")");
+                                    }
+                                } else if (text[0] != null &&
+                                    text[0].equalsIgnoreCase("TweakTravel")) {
+                                    String fixedStr = "[" + sign.getLine(0) + "]";
+                                    text[0] = fixedStr;
+
+                                    SignChangeEvent evt = new SignChangeEvent(sign.getBlock(), event.getPlayer(), text);
+                                    event.getPlayer().getServer().getPluginManager().callEvent(evt);
+                                    if (!evt.isCancelled()) {
+                                        sign.setLine(0, fixedStr);
+                                        sign.update(true);
+                                        // player.sendMessage(ChatColor.GOLD + "Fixed IC! (" + fixedStr + ")");
                                     }
                                 }
                             } else {

@@ -87,7 +87,8 @@ public class Cycler {
                     break;
                 case PISTON_BASE:
                 case PISTON_STICKY_BASE:
-                    newByte = (byte) ((b.getData() + 1) % 7);
+                    // Stop at 6 instead of 7, the server no longer likes "6 faced pistons"
+                    newByte = (byte) ((b.getData() + 1) % 6);
                     break;
                 case SIGN_POST:
                     newByte = (byte) ((b.getData() + 1) % 16);
@@ -120,6 +121,10 @@ public class Cycler {
                     break;
                 case FENCE_GATE:
                     newByte = (byte) ((b.getData() + 1) % 4);
+                    break;
+                case DOUBLE_STEP:
+                case DOUBLE_STONE_SLAB2:
+                    newByte = (byte) ((b.getData()) ^ 8);
                     break;
 
             }
